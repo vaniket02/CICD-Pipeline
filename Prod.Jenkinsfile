@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',url: 'https://github.com/vaniket02/CICD-Pipeline.git'
+                git branch: 'main', url: 'https://github.com/vaniket02/CICD-Pipeline.git'
             }
         }
         stage('Build') {
