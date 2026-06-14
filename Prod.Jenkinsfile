@@ -1,55 +1,105 @@
+writing{variant="document" id="52841"}
 pipeline {
-agent any
+    agent any
 
-```
-environment {
-    IMAGE_NAME = "vaniket02/devops-demo"
-    CONTAINER_NAME = "react-app"
-}
-
-stages {
-
-    stage('Checkout') {
-        steps {
-            git branch: 'main',
-            url: 'https://github.com/vaniket02/devops-demo.git'
-        }
+    environment {
+        IMAGE_NAME = "vaniket02/devops-demo"
+        CONTAINER_NAME = "react-app"
     }
 
-    stage('Build') {
-        steps {
-            sh 'npm install'
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/vaniket02/devops-demo.git'
+            }
         }
-    }
 
-    stage('Test') {
-        steps {
-            sh 'npm test -- --watchAll=false'
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
         }
-    }
 
-    stage('Docker Build') {
-        steps {
-            sh 'docker build -t $IMAGE_NAME:latest .'
+        stage('Test') {
+            steps {
+                sh 'npm test -- --watchAll=false'
+            }
         }
-    }
 
-    stage('Docker Push') {
-        steps {
-            withCredentials([usernamePassword(
-                credentialsId: 'dockerhub',
-                usernameVariable: 'DOCKER_USER',
-                passwordVariable: 'DOCKER_PASS'
-            )]) {
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:latest .'
+            }
+        }
 
-                sh '''
-                echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                docker push $IMAGE_NAME:latest
-                '''
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    docker push $IMAGE_NAME:latest
+                    '''
+                }
             }
         }
     }
-}
-```
+}writing{variant="document" id="52841"}
+pipeline {
+    agent any
 
+    environment {
+        IMAGE_NAME = "vaniket02/devops-demo"
+        CONTAINER_NAME = "react-app"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/vaniket02/devops-demo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test -- --watchAll=false'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:latest .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    docker push $IMAGE_NAME:latest
+                    '''
+                }
+            }
+        }
+    }
 }
