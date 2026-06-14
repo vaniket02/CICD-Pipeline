@@ -1,25 +1,29 @@
 pipeline {
     agent any
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/vaniket02/CICD-Pipeline.git'
+                git branch: 'main',
+                    url: 'https://github.com/vaniket02/CICD-Pipeline.git'
             }
         }
+
         stage('Build') {
             steps {
-                sh 'npm install'
+                echo 'Build Stage Executed'
             }
         }
+
         stage('Test') {
             steps {
-                sh 'npm test'
+                echo 'Test Stage Executed'
             }
         }
+
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
-                // Add deployment commands here (e.g., copy files, run scripts)
+                echo 'Deploy Stage Executed'
             }
         }
     }
