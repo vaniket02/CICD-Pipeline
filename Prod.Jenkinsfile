@@ -1,30 +1,55 @@
 pipeline {
-    agent any
+agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/vaniket02/CICD-Pipeline.git'
-            }
+```
+environment {
+    IMAGE_NAME = "vaniket02/devops-demo"
+    CONTAINER_NAME = "react-app"
+}
+
+stages {
+
+    stage('Checkout') {
+        steps {
+            git branch: 'main',
+            url: 'https://github.com/vaniket02/devops-demo.git'
         }
+    }
 
-        stage('Build') {
-            steps {
-                echo 'Build Stage Executed'
-            }
+    stage('Build') {
+        steps {
+            sh 'npm install'
         }
+    }
 
-        stage('Test') {
-            steps {
-                echo 'Test Stage Executed'
-            }
+    stage('Test') {
+        steps {
+            sh 'npm test -- --watchAll=false'
         }
+    }
 
-        stage('Deploy') {
-            steps {
-                echo 'Deploy Stage Executed'
+    stage('Docker Build') {
+        steps {
+            sh 'docker build -t $IMAGE_NAME:latest .'
+        }
+    }
+
+    stage('Docker Push') {
+        steps {
+            withCredentials([usernamePassword(
+                credentialsId: 'dockerhub',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASS'
+            )]) {
+
+                sh '''
+                echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                docker push $IMAGE_NAME:latest
+                '''
             }
         }
     }
+}
+```
+
 }
